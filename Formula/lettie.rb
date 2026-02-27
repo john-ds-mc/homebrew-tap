@@ -11,7 +11,12 @@ class Lettie < Formula
     system "npm", "install", *std_npm_args(prefix: false)
     system "npm", "run", "build"
     libexec.install Dir["dist/*"]
-    (bin/"lettie").write_env_script libexec/"index.js", PATH: "#{Formula["node"].opt_bin}:$PATH"
+    libexec.install "package.json"
+    (bin/"lettie").write <<~SH
+      #!/bin/bash
+      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/index.js" "$@"
+    SH
+    chmod 0755, bin/"lettie"
   end
 
   test do
