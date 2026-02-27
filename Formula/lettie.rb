@@ -10,7 +10,8 @@ class Lettie < Formula
   def install
     system "npm", "install", *std_npm_args(prefix: false)
     system "npm", "run", "build"
-    bin.install "dist/index.js" => "lettie"
+    libexec.install Dir["dist/*"]
+    (bin/"lettie").write_env_script libexec/"index.js", PATH: "#{Formula["node"].opt_bin}:$PATH"
   end
 
   test do
